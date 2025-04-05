@@ -8,10 +8,22 @@ from .serializers import BreedSerializer, DogSerializer
 
 
 class BreedsViewSet(viewsets.ModelViewSet):
+    r"""ViewSet для работы с моделью Breed.
+
+        Используется, как наследник стандартного ModelViewSet.
+        Переопределен метод list(), отвечающий за отображение списка экземпляров, которые запрошены по
+        \api\breeds\
+        GET \api\breeds\ - получение списка пород
+        POST \api\breeds\ - создание новой записи по предоставленным данным
+        GET \api\breeds\<id>\ - получение записи по id
+        PUT \api\breeds\<id>\ - обновление записи по id
+        DELETE \api\breeds\<id>\ - удаление записи по id
+    """
     queryset = Breed.objects.all()
     serializer_class = BreedSerializer
 
     def list(self, request, *args, **kwargs):
+        r"""В методе используется подзапрос для минимизации количества обращений к бд"""
         subquery = Dog.objects.filter(breed=OuterRef('id')).values('breed').annotate(
             same_breed_dogs_count=Count('id')).values('same_breed_dogs_count')
 
@@ -21,6 +33,17 @@ class BreedsViewSet(viewsets.ModelViewSet):
 
 
 class DogsViewSet(viewsets.ModelViewSet):
+    r"""ViewSet для работы с моделью Dog
+
+        Используется как наследник стандартного ModelViewSet.
+        Переопределены методы list, для отображения списка собак, и retrieve для отображения экземпляра модели
+        по id.
+        GET \api\dogs\ - получение списка собак
+        POST \api\dogs\ - создание новой записи по предоставленным данным
+        GET \api\dogs\<id>\ - получение записи по id
+        PUT \api\dogs\<id>\ - обновление записи по id
+        DELETE \api\dogs\<id>\ - удаление записи по id
+        """
     queryset = Dog.objects.select_related('breed')
     serializer_class = DogSerializer
 
