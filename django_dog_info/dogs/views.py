@@ -1,4 +1,5 @@
-from django.db.models import OuterRef, Avg, Subquery
+from django.db.models import OuterRef, Avg, Subquery, Count
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -21,4 +22,12 @@ class DogsViewSet(viewsets.ModelViewSet):
 
         dogs = Dog.objects.select_related('breed').annotate(avg_age=Subquery(subquery))
         serializer = DogSerializer(dogs, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        subquery = Dog.objects.filter(breed=OuterRef('breed')).values('breed').annotate(count=Count('id')).values(
+            'count')
+        dog = get_object_or_404(Dog.objects.filter(pk=pk).annotate(same_breed_count=Subquery(subquery)))
+        serializer = DogSerializer(dog)
         return Response(serializer.data)
