@@ -19,6 +19,8 @@ class BreedSerializer(serializers.ModelSerializer):
 class DogSerializer(serializers.ModelSerializer):
     breed_data = BreedSerializer(source='breed', read_only=True)
 
+    avg_age = serializers.FloatField(read_only=True)
+
     gender_display = serializers.SerializerMethodField()
 
     @staticmethod
@@ -27,4 +29,4 @@ class DogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dog
-        fields = ['id', 'name', 'age', 'breed', 'breed_data', 'color', 'gender', 'gender_display']
+        fields = ['id', 'name', 'age', 'breed', 'breed_data', 'avg_age', 'color', 'gender', 'gender_display']
