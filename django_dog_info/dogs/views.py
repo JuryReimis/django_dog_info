@@ -11,6 +11,14 @@ class BreedsViewSet(viewsets.ModelViewSet):
     queryset = Breed.objects.all()
     serializer_class = BreedSerializer
 
+    def list(self, request, *args, **kwargs):
+        subquery = Dog.objects.filter(breed=OuterRef('id')).values('breed').annotate(
+            same_breed_dogs_count=Count('id')).values('same_breed_dogs_count')
+
+        breeds = Breed.objects.annotate(same_breed_dogs_count=Subquery(subquery))
+        serializer = BreedSerializer(breeds, many=True)
+        return Response(serializer.data)
+
 
 class DogsViewSet(viewsets.ModelViewSet):
     queryset = Dog.objects.select_related('breed')
