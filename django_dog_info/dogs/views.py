@@ -23,11 +23,9 @@ class BreedsViewSet(viewsets.ModelViewSet):
     serializer_class = BreedSerializer
 
     def list(self, request, *args, **kwargs):
-        r"""В методе используется подзапрос для минимизации количества обращений к бд"""
-        subquery = Dog.objects.filter(breed=OuterRef('id')).values('breed').annotate(
-            same_breed_dogs_count=Count('id')).values('same_breed_dogs_count')
-
-        breeds = Breed.objects.annotate(same_breed_dogs_count=Subquery(subquery))
+        breeds = Breed.objects.annotate(
+            same_breed_dogs_count=Count('dogs')  # Здесь это корректно
+        )
         serializer = BreedSerializer(breeds, many=True)
         return Response(serializer.data)
 
@@ -51,7 +49,7 @@ class DogsViewSet(viewsets.ModelViewSet):
         subquery = Dog.objects.filter(breed=OuterRef('breed')).values('breed').annotate(avg_age=Avg('age')).values(
             'avg_age')
 
-        dogs = Dog.objects.select_related('breed').annotate(avg_age=Subquery(subquery))
+        dogs = Dog.objects.prefetch_related('breed').annotate(avg_age=Subquery(subquery))
         serializer = DogSerializer(dogs, many=True)
         return Response(serializer.data)
 
