@@ -4,6 +4,10 @@ from .models import Breed, Dog
 
 
 class BreedSerializer(serializers.ModelSerializer):
+    r"""Базовый сериализатор для модели Breed
+
+        Наследуется от стандартного ModelSerializer. Добавлены поля для отображения size_display и количества
+        собак с такой же породой."""
     size_display = serializers.SerializerMethodField(read_only=True)
 
     same_breed_dogs_count = serializers.IntegerField(read_only=True)
@@ -19,6 +23,11 @@ class BreedSerializer(serializers.ModelSerializer):
 
 
 class DogSerializer(serializers.ModelSerializer):
+    r"""Базовый сериализатор для модели Dog.
+
+        Наследуется от стандартного ModelSerializer.
+        Добавлено отображение развернутых данных для породы, среднего возраста у собак данной породы,
+        количество собак с такой породой и gender_display поля."""
     breed_data = BreedSerializer(source='breed', read_only=True)
 
     avg_age = serializers.FloatField(read_only=True)
