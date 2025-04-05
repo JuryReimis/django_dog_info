@@ -4,13 +4,20 @@ from .models import Breed, Dog
 
 
 class BreedSerializer(serializers.ModelSerializer):
+    size_display = serializers.SerializerMethodField(read_only=True)
+
+    @staticmethod
+    def get_size_display(obj: Breed):
+        return obj.get_size_display()
 
     class Meta:
         model = Breed
-        fields = ['name', 'size', 'friendliness', 'trainability', 'shedding_amount', 'exercise_needs']
+        fields = ['id', 'name', 'size', 'size_display', 'friendliness', 'trainability', 'shedding_amount',
+                  'exercise_needs']
 
 
 class DogSerializer(serializers.ModelSerializer):
+    breed_data = BreedSerializer(source='breed', read_only=True)
 
     gender_display = serializers.SerializerMethodField()
 
@@ -20,4 +27,4 @@ class DogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dog
-        fields = ['name', 'age', 'breed', 'color', 'gender', 'gender_display']
+        fields = ['id', 'name', 'age', 'breed', 'breed_data', 'color', 'gender', 'gender_display']
