@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 
 from .models import Breed, Dog
@@ -13,6 +12,6 @@ class BreedsViewSet(viewsets.ModelViewSet):
 
 class DogsViewSet(viewsets.ModelViewSet):
 
-    queryset = Dog.objects.all()
+    queryset = Dog.objects.select_related('breed')
     serializer_class = DogSerializer
 
