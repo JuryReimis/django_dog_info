@@ -2,6 +2,18 @@ from django.db import models
 
 
 class Dog(models.Model):
+    MALE = 'm'
+    FEMALE = 'f'
+    CASTRATED = 'm-'
+    STERILIZED = 'f-'
+
+    GENDER_CHOICES = [
+        (MALE, "Кабель"),
+        (FEMALE, "Сука"),
+        (CASTRATED, "Кастрированный кабель"),
+        (STERILIZED, "Стерилизованная сука")
+    ]
+
     name = models.CharField(
         max_length=120,
         verbose_name="Кличка"
@@ -21,7 +33,8 @@ class Dog(models.Model):
     )
 
     gender = models.CharField(
-        max_length=120,
+        max_length=2,
+        choices=GENDER_CHOICES,
         verbose_name="Пол"
     )
 
@@ -41,9 +54,10 @@ class Dog(models.Model):
     )
 
     def __str__(self):
-        return
+        return f'{self.name}'
 
     class Meta:
+        ordering = ['name']
         verbose_name = "Собака"
         verbose_name_plural = "Собаки"
 
@@ -100,6 +114,9 @@ class Breed(models.Model):
         choices=POWER_CHOICES,
         verbose_name="Потребность в активных действиях"
     )
+
+    def __str__(self):
+        return f'Порода: {self.name}'
 
     class Meta:
         verbose_name = "Порода"
