@@ -6,6 +6,8 @@ from .models import Breed, Dog
 class BreedSerializer(serializers.ModelSerializer):
     size_display = serializers.SerializerMethodField(read_only=True)
 
+    same_breed_dogs_count = serializers.IntegerField(read_only=True)
+
     @staticmethod
     def get_size_display(obj: Breed):
         return obj.get_size_display()
@@ -13,7 +15,7 @@ class BreedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Breed
         fields = ['id', 'name', 'size', 'size_display', 'friendliness', 'trainability', 'shedding_amount',
-                  'exercise_needs']
+                  'exercise_needs', 'same_breed_dogs_count']
 
 
 class DogSerializer(serializers.ModelSerializer):
