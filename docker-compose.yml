@@ -9,6 +9,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   web:
+    restart: always
     build:
       context: .
     ports:
@@ -16,8 +17,7 @@ services:
     volumes:
       - ./django_dog_info:/django_dog_info
     command: >
-      sh -c "python manage.py wait_for_db &&
-      python manage.py makemigrations &&
+      sh -c "python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
     environment:
