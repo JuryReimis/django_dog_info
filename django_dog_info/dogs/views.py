@@ -18,6 +18,9 @@ class BreedsViewSet(viewsets.ModelViewSet):
         GET \api\breeds\<id>\ - получение записи по id
         PUT \api\breeds\<id>\ - обновление записи по id
         DELETE \api\breeds\<id>\ - удаление записи по id
+
+        При попытке обращения к несуществующему id - "No Breed matches the given query."
+        Возможных исключений не обнаружено. Все работает предсказуемо.
     """
     queryset = Breed.objects.all()
     serializer_class = BreedSerializer
@@ -41,6 +44,10 @@ class DogsViewSet(viewsets.ModelViewSet):
         GET \api\dogs\<id>\ - получение записи по id
         PUT \api\dogs\<id>\ - обновление записи по id
         DELETE \api\dogs\<id>\ - удаление записи по id
+
+        При запросе к несуществующему id будет возвращено сообщение "No Dog matches the given query."
+        При попытке заменить породу на несуществующую - "Invalid pk - object does not exist."
+        Возможных исключений не обнаружено. Все работает предсказуемо.
         """
     queryset = Dog.objects.select_related('breed')
     serializer_class = DogSerializer
